@@ -1,0 +1,27 @@
+repository_type: pipeline
+
+nf_core_version: 3.3.2
+
+lint:
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+  multiqc_config: false
+  files_exist:
+    - assets/multiqc_config.yml
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+
+template:
+  org: nf-core
+  name: mdsimulations
+  description: A pipeline to run Molecular Dynamics (MD) simulations with GROMACS.
+  author: "Sara Tolosa Alarc\xF3n"
+  version: 1.0.0dev
+  force: true
+  outdir: .
+  skip_features:
+    - igenomes
+    - multiqc
+    - fastqc
+  is_nfcore: true
