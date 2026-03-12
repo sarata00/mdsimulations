@@ -2,9 +2,9 @@
 
 /*
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//     nf-core/mdsimulations
+//     nf-core/moleculardynamics
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//     Github : https://github.com/sarata00/mdsimulations
+//     Github : https://github.com/nf-core/moleculardynamics
 // ----------------------------------------------------------------------------------------
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,6 +36,6 @@ process RUN_TOPOLOGY {
     script:
     """
     echo "Loading data from ${checked_pdb} and generating GROMACS topology file (.gro)"
-    ${params.gmx_cmd} pdb2gmx -f ${checked_pdb} -o ${sample}.gro -i posre.itp -ff ${force_field} -water spce -ignh
+    ${params.gmx_cmd} pdb2gmx -f ${checked_pdb} -o ${sample}.gro -i posre.itp -ff ${forcefield} -water spce -ignh
     """
 }

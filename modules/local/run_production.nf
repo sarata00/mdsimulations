@@ -2,9 +2,9 @@
 
 /*
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//     nf-core/mdsimulations
+//     nf-core/moleculardynamics
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//     Github : https://github.com/sarata00/mdsimulations
+//     Github : https://github.com/nf-core/moleculardynamics
 // ----------------------------------------------------------------------------------------
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@ process RUN_PRODUCTION {
     publishDir "${outdir}", mode: 'copy'
     
     input:
-    tuple val(sample), path(nvt_gro), path(topol), path(itps), path(md_mdp), val(outdir)
+    tuple val(sample), path(npt_gro), path(topol), path(itps), path(md_mdp), val(outdir)
 
     
     output:

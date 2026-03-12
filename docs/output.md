@@ -1,4 +1,4 @@
-# nf-core/mdsimulations: Output
+# nf-core/moleculardynamics: Output
 
 ## Introduction
 

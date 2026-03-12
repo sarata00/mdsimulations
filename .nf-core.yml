@@ -14,7 +14,7 @@ lint:
 
 template:
   org: nf-core
-  name: mdsimulations
+  name: moleculardynamics
   description: A pipeline to run Molecular Dynamics (MD) simulations with GROMACS.
   author: "Sara Tolosa Alarc\xF3n"
   version: 1.0.0dev

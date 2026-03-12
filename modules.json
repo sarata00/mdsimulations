@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/mdsimulations",
-    "homePage": "https://github.com/nf-core/mdsimulations",
+    "name": "nf-core/moleculardynamics",
+    "homePage": "https://github.com/nf-core/moleculardynamics",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

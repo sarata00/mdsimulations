@@ -5,7 +5,7 @@
 */
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_mdsimulations_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_moleculardynamics_pipeline'
 
 include { PRE_PROCESSING        } from '../subworkflows/local/pre_processing/main.nf'
 include { RUN_MD_SIMULATION     } from '../subworkflows/local/run_md/main.nf'
@@ -19,7 +19,7 @@ include { ANALYSIS_RMSD         } from '../modules/local/analysis_rmsd.nf'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow MDSIMULATIONS {
+workflow MOLECULARDYNAMICS {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
@@ -83,7 +83,7 @@ workflow MDSIMULATIONS {
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_'  +  'mdsimulations_software_'  + 'versions.yml',
+            name: 'nf_core_'  +  'moleculardynamics_software_'  + 'versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
