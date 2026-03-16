@@ -18,18 +18,20 @@
 */
 
 process PRE_POS_CLEAN_PDB {
-        publishDir "${outdir}", mode: 'copy'
-    
-        input:
-        tuple val(sample), path(pdb), val(forcefield), val(box_type), val(distance_to_box), path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp)
+    publishDir "${params.outdir}/preprocessing", mode: 'copy'
 
-        output:
-        tuple val(sample), path("${sample}_cleaned.pdb"), val(forcefield), val(box_type), val(distance_to_box), path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp) into cleaned_pdb
+    input:
+    tuple val(sample), path(pdb), val(forcefield), val(box_type), val(distance_to_box), path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp)
 
-        script:
-        """
-        grep -v HETATM "$pdb" > "${sample}_temp.pdb"
-        grep -v CONECT "${sample}_temp.pdb" > "${sample}_cleaned.pdb"
-        """
+    output:
+    tuple val(sample), path("${sample}_cleaned.pdb"), val(forcefield), val(box_type), val(distance_to_box),
+        path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp),
+        emit: cleaned
+
+    script:
+    """
+    grep -v HETATM "$pdb" > "${sample}_temp.pdb"
+    grep -v CONECT "${sample}_temp.pdb" > "${sample}_cleaned.pdb"
+    """
     
 }
