@@ -47,11 +47,11 @@ process RUN_SOLVATION {
     """
     echo "Defining the box for ${gro} and solvating the system"
     ${params.gmx_cmd} editconf -f ${gro} -o ${sample}_box.gro -c -d ${distance_to_box} -bt ${box_type}
-    ${params.gmx_cmd} solvate -cp ${sample}_box.gro -cs spc216.gro -o ${sample}_box_solv.gro -p topol.top
+    ${params.gmx_cmd} solvate -cp ${sample}_box.gro -cs ${params.water_coordinates} -o ${sample}_box_solv.gro -p topol.top
     echo "Adding ions to neutralize the system"
     touch ions.mdp
     ${params.gmx_cmd} grompp -f ions.mdp -c ${sample}_box_solv.gro -p topol.top -o ions.tpr
-    printf "SOL\n" | ${params.gmx_cmd} genion -s ions.tpr -o ${sample}_box_solv_ions.gro -p topol.top -neutral -conc 0.15 -pname NA -nname CL
+    printf "SOL\n" | ${params.gmx_cmd} genion -s ions.tpr -o ${sample}_box_solv_ions.gro -p topol.top -neutral -conc ${params.ion_concentration} -pname NA -nname CL
 
     """
 }

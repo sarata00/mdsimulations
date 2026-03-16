@@ -42,7 +42,7 @@ process RUN_TOPOLOGY {
     script:
     """
     echo "Loading data from ${checked_pdb} and generating GROMACS topology file (.gro)"
-    ${params.gmx_cmd} pdb2gmx -f ${checked_pdb} -o ${sample}.gro -i posre.itp -ff ${forcefield} -water spce -ignh
+    ${params.gmx_cmd} pdb2gmx -f ${checked_pdb} -o ${sample}.gro -i posre.itp -ff ${forcefield} -water ${params.water_model} -ignh
 
     """
 }
