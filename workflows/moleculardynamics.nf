@@ -82,9 +82,10 @@ workflow MOLECULARDYNAMICS {
 
 
     emit:
-    versions           = ch_versions                 // channel: [ path(versions.yml) ]
-    postprocessed_xtc  = ch_postprocessed_xtc        // channel: [ tuple(sample_id, path(postprocessed_xtc)) ]
-    rmsd               = ANALYSIS_RMSD.out.rmsd_xvg  // channel: [ tuple(sample_id, path(rmsd.xvg)) ]
+    collated_info           = ch_collated_versions        // channel: [ path(collated_versions.yml) ]
+    cleaned_pdb             = ch_cleaned_pdb              // channel: [ tuple(sample_id, path(cleaned_pdb)) ]
+    ch_postprocessed_xtc    = ch_postprocessed_xtc        // channel: [ tuple(sample_id, path(postprocessed_xtc)) ]
+    versions                = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*
