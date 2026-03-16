@@ -16,6 +16,7 @@
 */
 
 process RUN_ENERGY_MINIMISATION {
+    label 'process_medium'
   
     publishDir "${params.outdir}/energy_minimization", mode: 'copy'
     
@@ -32,6 +33,7 @@ process RUN_ENERGY_MINIMISATION {
     path "${em_mdp.simpleName}.tpr"
     path "${em_mdp.simpleName}.edr"
     path "${em_mdp.simpleName}.log"
+    path "versions.yml", emit: versions
 
 
     script:
@@ -40,5 +42,11 @@ process RUN_ENERGY_MINIMISATION {
     ${params.gmx_cmd} grompp -f ${em_mdp} -c ${gro_box_solvated_ions} -p topol.top -o ${em_mdp.simpleName}.tpr
     ${params.gmx_cmd} mdrun -v -deffnm ${em_mdp.simpleName}
     echo "Energy minimization completed"
+
+    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gromacs: "${gmx_version:-unknown}"
+    END_VERSIONS
     """
 }

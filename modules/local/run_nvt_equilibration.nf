@@ -16,6 +16,7 @@
 */
 
 process RUN_NVT_EQUILIBRATION {
+    label 'process_medium'
   
     publishDir "${params.outdir}/nvt_equilibration", mode: 'copy'
     
@@ -32,6 +33,7 @@ process RUN_NVT_EQUILIBRATION {
     path "${nvt_mdp.simpleName}.tpr"
     path "${nvt_mdp.simpleName}.edr"
     path "${nvt_mdp.simpleName}.log"
+    path "versions.yml", emit: versions
 
     script:
     """
@@ -39,5 +41,11 @@ process RUN_NVT_EQUILIBRATION {
     ${params.gmx_cmd} grompp -f ${nvt_mdp} -c ${em_gro} -r ${em_gro} -p topol.top -o ${nvt_mdp.simpleName}.tpr
     ${params.gmx_cmd} mdrun -v -deffnm ${nvt_mdp.simpleName}
     echo "NVT equilibration completed"
+
+    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gromacs: "${gmx_version:-unknown}"
+    END_VERSIONS
     """
 }

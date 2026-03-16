@@ -17,6 +17,8 @@
 */
 
 process RUN_PRODUCTION {
+    label 'process_high'
+    label 'process_long'
       
     publishDir "${params.outdir}/production", mode: 'copy'
     
@@ -33,6 +35,7 @@ process RUN_PRODUCTION {
     path "${md_mdp.simpleName}.edr"
     path "${md_mdp.simpleName}.log"
     path "MD_REPORT", emit: md_report
+    path "versions.yml", emit: versions
 
 
     script:
@@ -41,6 +44,12 @@ process RUN_PRODUCTION {
     ${params.gmx_cmd} grompp -f ${md_mdp} -c ${npt_gro} -p topol.top -o ${md_mdp.simpleName}.tpr
     ${params.gmx_cmd} mdrun -v -deffnm ${md_mdp.simpleName}
     ${params.gmx_cmd} report-methods -s ${md_mdp.simpleName}.tpr -o MD_REPORT
+
+    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gromacs: "${gmx_version:-unknown}"
+    END_VERSIONS
 
     echo "Simulation completed!"
     """

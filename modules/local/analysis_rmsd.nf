@@ -17,6 +17,7 @@
 */
 
 process ANALYSIS_RMSD {
+    label 'process_low'
   
     publishDir "${params.outdir}/analysis", mode: 'copy'
     
@@ -25,12 +26,20 @@ process ANALYSIS_RMSD {
     
     output:
     tuple val(sample), path("rmsd.xvg"), emit: rmsd_xvg
+    path "versions.yml", emit: versions
 
     script:
     """
     echo "Calculating RMSD for the protein along the trajectory"
     # Select group 3 (usually C-alpha atoms) for RMSD calculation over the protein (group 1)
     printf "3\n1\n" | ${params.gmx_cmd} rms -s ${md_gro} -f ${md_noPBC_xtc} -o rmsd.xvg -tu ns
+
+    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gromacs: "${gmx_version:-unknown}"
+    END_VERSIONS
+
     echo "RMSD analysis completed!"
     """
 }

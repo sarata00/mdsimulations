@@ -32,10 +32,18 @@ workflow RUN_MD_SIMULATION {
     // STEP 6. Production run
     RUN_PRODUCTION(RUN_NPT_EQUILIBRATION.out.npt_equilibration_out)
 
+    ch_versions = RUN_TOPOLOGY.out.versions
+        .mix(RUN_SOLVATION.out.versions)
+        .mix(RUN_ENERGY_MINIMISATION.out.versions)
+        .mix(RUN_NVT_EQUILIBRATION.out.versions)
+        .mix(RUN_NPT_EQUILIBRATION.out.versions)
+        .mix(RUN_PRODUCTION.out.versions)
+
     emit:
     // production_out is tuple(sample, tpr, gro, xtc)
     md_tpr    = RUN_PRODUCTION.out.production_out.map { tuple(it[0], it[1]) }
     md_gro    = RUN_PRODUCTION.out.production_out.map { tuple(it[0], it[2]) }
     md_xtc    = RUN_PRODUCTION.out.production_out.map { tuple(it[0], it[3]) }
     md_report = RUN_PRODUCTION.out.md_report
+    versions  = ch_versions
 }
