@@ -19,18 +19,18 @@
 
 process RUN_TOPOLOGY {
    
-    publishDir "${outdir}", mode: 'copy'
+    publishDir "${params.outdir}/topology", mode: 'copy'
     
     input:
-    tuple val(sample), path(checked_pdb), val(forcefield), val(box_type), val(distance_to_box), path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp) into checked_pdb
+    tuple val(sample), path(checked_pdb), val(forcefield), val(box_type), val(distance_to_box), path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp)
     
     output:
     tuple val(sample),
-        path("${sample}.gro"),    // gro file
-        path("topol.top"),                        // topology
-        path("*.itp"),                             // itp files
+        path("${sample}.gro"),
+        path("topol.top"),
+        path("*.itp"),
         path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp),
-        val(forcefield), val(box_type), val(distance_to_box)
+        val(forcefield), val(box_type), val(distance_to_box),
         emit: topology_out
 
     script:

@@ -18,21 +18,21 @@
 
 process RUN_PRODUCTION {
       
-    publishDir "${outdir}", mode: 'copy'
+    publishDir "${params.outdir}/production", mode: 'copy'
     
     input:
-    tuple val(sample), path(npt_gro), path(topol), path(itps), path(md_mdp), val(outdir)
+    tuple val(sample), path(npt_gro), path(topol), path(itps), path(md_mdp)
 
     
     output:
     tuple val(sample),
-    path("${md_mdp.simpleName}.tpr"),
-    path("${md_mdp.simpleName}.edr"),
-    path("${md_mdp.simpleName}.gro"),
-    path("${md_mdp.simpleName}.log"),
-    path("topol.top"), path(itps), path("MD_REPORT"), 
-    val(outdir)
-    emit: production_out
+        path("${md_mdp.simpleName}.tpr"),
+        path("${md_mdp.simpleName}.gro"),
+        path("${md_mdp.simpleName}.xtc"),
+        emit: production_out
+    path "${md_mdp.simpleName}.edr"
+    path "${md_mdp.simpleName}.log"
+    path "MD_REPORT", emit: md_report
 
 
     script:
@@ -42,6 +42,6 @@ process RUN_PRODUCTION {
     ${params.gmx_cmd} mdrun -v -deffnm ${md_mdp.simpleName}
     ${params.gmx_cmd} report-methods -s ${md_mdp.simpleName}.tpr -o MD_REPORT
 
-    echo "Simulation completed! Results saved in ${outdir}"
+    echo "Simulation completed!"
     """
 }
