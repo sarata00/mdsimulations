@@ -29,18 +29,17 @@ process PRE_POS_CLEAN_PDB {
     tuple val(sample), path("${sample}_cleaned.pdb"), val(forcefield), val(box_type), val(distance_to_box),
         path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp),
         emit: cleaned
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"),
+        val('gromacs'),
+        eval("${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true"),
+        emit: versions_gromacs,
+        topic: versions
 
     script:
     """
     grep -v HETATM "$pdb" > "${sample}_temp.pdb"
     grep -v CONECT "${sample}_temp.pdb" > "${sample}_cleaned.pdb"
 
-    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gromacs: "${gmx_version:-unknown}"
-    END_VERSIONS
     """
     
 }

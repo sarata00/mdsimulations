@@ -37,7 +37,11 @@ process RUN_SOLVATION {
     path "${sample}_box.gro"
     path "${sample}_box_solv.gro"
     path "ions.tpr"
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"),
+        val('gromacs'),
+        eval("${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true"),
+        emit: versions_gromacs,
+        topic: versions
 
     script:
     """
@@ -49,10 +53,5 @@ process RUN_SOLVATION {
     ${params.gmx_cmd} grompp -f ions.mdp -c ${sample}_box_solv.gro -p topol.top -o ions.tpr
     printf "SOL\n" | ${params.gmx_cmd} genion -s ions.tpr -o ${sample}_box_solv_ions.gro -p topol.top -neutral -conc 0.15 -pname NA -nname CL
 
-    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gromacs: "${gmx_version:-unknown}"
-    END_VERSIONS
     """
 }

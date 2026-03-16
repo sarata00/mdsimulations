@@ -26,19 +26,17 @@ process POST_PROCESSING {
     
     output:
     tuple val(sample), path("md_noPBC.xtc"), emit: post_xtc
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"),
+        val('gromacs'),
+        eval("${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true"),
+        emit: versions_gromacs,
+        topic: versions
 
     script:
     """
     echo "Starting post-processing to remove periodicity artifacts"
     echo "We center the protein and output the system"
     printf "1\n0\n" | ${params.gmx_cmd} trjconv -s ${md_tpr} -f ${md_xtc} -o md_noPBC.xtc -pbc mol -center
-
-    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gromacs: "${gmx_version:-unknown}"
-    END_VERSIONS
 
     echo "Post-processing completed!"
     """

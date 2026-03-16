@@ -30,7 +30,11 @@ process PRE_POS_CHECK_MISSING_ATOMS {
               val(forcefield), val(box_type), val(distance_to_box), 
               path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp),
               emit: checked_pdb
-          path "versions.yml", emit: versions
+          tuple val("${task.process}"),
+              val('gromacs'),
+              eval("${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true"),
+              emit: versions_gromacs,
+              topic: versions
 
         script:
         """
@@ -43,11 +47,6 @@ process PRE_POS_CHECK_MISSING_ATOMS {
             echo "No missing atoms found in $cleaned_pdb"
         fi
 
-        gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            gromacs: "${gmx_version:-unknown}"
-        END_VERSIONS
         """
     
 }

@@ -10,9 +10,7 @@ workflow PRE_PROCESSING {
     main:
     PRE_POS_CLEAN_PDB(ch_inputs)
     PRE_POS_CHECK_MISSING_ATOMS(PRE_POS_CLEAN_PDB.out.cleaned)
-    ch_versions = PRE_POS_CLEAN_PDB.out.versions.mix(PRE_POS_CHECK_MISSING_ATOMS.out.versions)
 
     emit:
     cleaned_pdb = PRE_POS_CHECK_MISSING_ATOMS.out.checked_pdb
-    versions    = ch_versions
 }

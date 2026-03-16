@@ -69,10 +69,7 @@ workflow MOLECULARDYNAMICS {
     ANALYSIS_RMSD(ch_rmsd_input)
     ANALYSIS_RMSD.out.rmsd_xvg.view { "✅ RMSD analysis completed: $it" }
 
-    ch_versions = PRE_PROCESSING.out.versions
-        .mix(RUN_MD_SIMULATION.out.versions)
-        .mix(POST_PROCESSING.out.versions)
-        .mix(ANALYSIS_RMSD.out.versions)
+    ch_versions = channel.topic('versions')
 
     // Collate and save software versions
     softwareVersionsToYAML(ch_versions)

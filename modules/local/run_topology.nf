@@ -33,17 +33,16 @@ process RUN_TOPOLOGY {
         path(em_mdp), path(nvt_mdp), path(npt_mdp), path(md_mdp),
         val(forcefield), val(box_type), val(distance_to_box),
         emit: topology_out
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"),
+        val('gromacs'),
+        eval("${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true"),
+        emit: versions_gromacs,
+        topic: versions
 
     script:
     """
     echo "Loading data from ${checked_pdb} and generating GROMACS topology file (.gro)"
     ${params.gmx_cmd} pdb2gmx -f ${checked_pdb} -o ${sample}.gro -i posre.itp -ff ${forcefield} -water spce -ignh
 
-    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gromacs: "${gmx_version:-unknown}"
-    END_VERSIONS
     """
 }

@@ -34,7 +34,11 @@ process RUN_NPT_EQUILIBRATION {
     path "${npt_mdp.simpleName}.tpr"
     path "${npt_mdp.simpleName}.edr"
     path "${npt_mdp.simpleName}.log"
-    path "versions.yml", emit: versions
+    tuple val("${task.process}"),
+        val('gromacs'),
+        eval("${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true"),
+        emit: versions_gromacs,
+        topic: versions
 
     script:
     """
@@ -43,10 +47,5 @@ process RUN_NPT_EQUILIBRATION {
     ${params.gmx_cmd} mdrun -v -deffnm ${npt_mdp.simpleName}
     echo "NPT equilibration completed"
 
-    gmx_version="\$(${params.gmx_cmd} --version 2>/dev/null | sed -n 's/^GROMACS version:[[:space:]]*//p' | head -n 1 || true)"
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gromacs: "${gmx_version:-unknown}"
-    END_VERSIONS
     """
 }
